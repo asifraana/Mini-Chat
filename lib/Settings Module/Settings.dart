@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../BottomNavigation.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return  PopScope(
+        canPop: false,
+        onPopInvoked: (didPop) {
+          Get.offAll(
+                () => Bottomnavigation(bottomvalue: 0,),
+
+            transition: Transition.rightToLeft,
+            duration: Duration(milliseconds: 500),
+          );
+        },
+        child:Scaffold(
       backgroundColor: Color(0xffFFFFFF),
       body:Center(
         child:  Text('Settings',
@@ -17,6 +30,6 @@ class Settings extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ));
   }
 }

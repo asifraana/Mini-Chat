@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../chat.dart';
+import '../Chat/chat.dart';
 import 'chathistory_controller.dart';
 
 class ChatHistoryTab extends StatefulWidget {
@@ -17,7 +17,7 @@ class _ChatHistoryTabState extends State<ChatHistoryTab> {
 
   @override
   void initState() {
-    chatshistorycontroller.fetchChats();
+    chatshistorycontroller.fetchChats(context);
     super.initState();
   }
 
@@ -28,7 +28,6 @@ class _ChatHistoryTabState extends State<ChatHistoryTab> {
       if (chatshistorycontroller.isLoading.value) {
         return const Center(child: CircularProgressIndicator());
       }
-
       return ListView.builder(
       padding: const EdgeInsets.only(right: 16,left: 16, top: 8,bottom: 90),
       itemCount: chatshistorycontroller.chats.length,
@@ -43,7 +42,7 @@ class _ChatHistoryTabState extends State<ChatHistoryTab> {
 
         return ListTile(
           onTap: (){
-            Get.offAll(() => ChatScreen(),
+            Get.offAll(() => ChatScreen(),arguments: {"id":chat.id,"name":name,"status":'online'},
               transition: Transition.leftToRight,
               duration: Duration(milliseconds: 500),
             );
@@ -63,6 +62,7 @@ class _ChatHistoryTabState extends State<ChatHistoryTab> {
           ),
           title: Text(
             name,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
           subtitle: Text(

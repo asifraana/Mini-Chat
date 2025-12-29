@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mini_chat/BottomNavigation.dart';
 
-import 'dictionary_word.dart';
+import '../dictionary_word.dart';
+import 'chatcontroller.dart';
+import 'messenger Model.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -12,99 +14,32 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final ChatController chatcontroller= Get.put(ChatController());
 
-  final TextEditingController _controller = TextEditingController();
-
-  final List<Map<String, dynamic>> messages = [
-    {
-      "msg": "Hey! How are you doing?",
-      "time": "10:30 AM",
-      "isSender": false,
-    },
-    {
-      "msg": "I'm doing great, thanks! How about you?",
-      "time": "10:31 AM",
-      "isSender": true,
-    },
-    {
-      "msg": "Hey! How are you doing?",
-      "time": "10:30 AM",
-      "isSender": false,
-    },
-    {
-      "msg": "I'm doing great, thanks! How about you?",
-      "time": "10:31 AM",
-      "isSender": true,
-    },
-    {
-      "msg": "Hey! How are you doing?",
-      "time": "10:30 AM",
-      "isSender": false,
-    },
-    {
-      "msg": "I'm doing great, thanks! How about you?",
-      "time": "10:31 AM",
-      "isSender": true,
-    },
-    {
-      "msg": "Hey! How are you doing?",
-      "time": "10:30 AM",
-      "isSender": false,
-    },
-    {
-      "msg": "I'm doing great, thanks! How about you?",
-      "time": "10:31 AM",
-      "isSender": true,
-    },
-    {
-      "msg": "Hey! How are you doing?",
-      "time": "10:30 AM",
-      "isSender": false,
-    },
-    {
-      "msg": "I'm doing great, thanks! How about you?",
-      "time": "10:31 AM",
-      "isSender": true,
-    },
-    {
-      "msg": "Hey! How are you doing?",
-      "time": "10:30 AM",
-      "isSender": false,
-    },
-    {
-      "msg": "I'm doing great, thanks! How about you?",
-      "time": "10:31 AM",
-      "isSender": true,
-    },
-    {
-      "msg": "Hey! How are you doing?",
-      "time": "10:30 AM",
-      "isSender": false,
-    },
-    {
-      "msg": "I'm doing great, thanks! How about you?",
-      "time": "10:31 AM",
-      "isSender": true,
-    },
-  ];
-
-  void sendMessage() {
-    if (_controller.text.trim().isEmpty) return;
-
-    setState(() {
-      messages.add({
-        "msg": _controller.text.trim(),
-        "time": TimeOfDay.now().format(context),
-        "isSender": true,
-      });
-    });
-
-    _controller.clear();
-  }
 
   @override
+  void initState() {
+    super.initState();
+    final data = Get.arguments as Map<String, dynamic>;
+    chatcontroller.id=data['id'];
+    chatcontroller.name=data['name'];
+    chatcontroller.status=data['status'];
+
+
+  }
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PopScope(
+        canPop: false,
+        onPopInvoked: (didPop) {
+          Get.offAll(
+                () => Bottomnavigation(bottomvalue: 0,),
+
+            transition: Transition.rightToLeft,
+            duration: Duration(milliseconds: 500),
+          );
+        },
+        child:Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -146,7 +81,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
                 ),
                 child: Text(
-                  'A',
+                  chatcontroller.name[0],
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 20,
@@ -159,7 +94,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Asif',
+                    chatcontroller.name,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -167,7 +102,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'online',
+                    chatcontroller.status,
                     style: TextStyle(
                       color: Colors.grey.shade600,
                       fontSize: 13,
@@ -185,108 +120,80 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       body: Column(
         children: [
-
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.only(top: 12),
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                final m = messages[index];
-                return ChatBubble(
-                  message: m["msg"],
-                  time: m["time"],
-                  isSender: m["isSender"],
-                );
-              },
-            ),
+            child: Obx(() {
+              return ListView.builder(
+                controller: chatcontroller.scrollController,
+                padding: const EdgeInsets.all(12),
+                itemCount: chatcontroller.messages.length,
+                itemBuilder: (context, index) {
+                  final msg = chatcontroller.messages[index];
+                  return ChatBubble(
+                    message: msg,
+                    name: chatcontroller.name,
+                  );
+                },
+              );
+            }),
           ),
 
-
-          SafeArea(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 4,
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _controller,
-                      textInputAction: TextInputAction.send,
-                      onSubmitted: (_) => sendMessage(),
-                      decoration: InputDecoration(
-                        hintText: "Type a message...",
-                        filled: true,
-                        fillColor: Colors.grey.shade100,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  CircleAvatar(
-                    radius: 22,
-                    backgroundColor: Colors.blue,
-                    child: IconButton(
-                      icon: const Icon(Icons.send, color: Colors.white),
-                      onPressed: sendMessage,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          _inputBar(),
         ],
+      ),
+
+
+    ));
+  }
+  Widget _inputBar() {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: chatcontroller.controller,
+                onSubmitted: (value){
+                  chatcontroller.sendMessage(context);
+                },
+                decoration: const InputDecoration(
+                  hintText: "Type message...",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            IconButton(
+                icon: const Icon(Icons.send),
+                onPressed:(){chatcontroller.sendMessage(context);}
+            ),
+          ],
+        ),
       ),
     );
   }
-
-
-
-
-
-
 }
 
 class ChatBubble extends StatelessWidget {
-  final String message;
-  final String time;
-  final bool isSender;
+  final MessageModel message;
+  String?  name;
 
-  const ChatBubble({
-    super.key,
-    required this.message,
-    required this.time,
-    required this.isSender,
-  });
+  ChatBubble({super.key, required this.message,this.name});
 
   @override
   Widget build(BuildContext context) {
-    final words = message.split(" ");
+    final isSender = message.isSender;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment:
         isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
-          if (!isSender) _avatar("A"),
-
+          if (!isSender) _avatar(name![0],isSender),
           Flexible(
             child: Column(
               crossAxisAlignment: isSender
@@ -300,7 +207,7 @@ class ChatBubble extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Wrap(
-                    children: words.map((word) {
+                    children: message.text.split(' ').map((word) {
                       return GestureDetector(
                         onLongPress: () {
                           showMeaningBottomSheet(
@@ -310,10 +217,14 @@ class ChatBubble extends StatelessWidget {
                         },
                         child: Text(
                           "$word ",
+                          textAlign: TextAlign.justify,
+
                           style: TextStyle(
+
                             color:
                             isSender ? Colors.white : Colors.black,
                             fontSize: 15,
+
                           ),
                         ),
                       );
@@ -322,7 +233,7 @@ class ChatBubble extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  time,
+                  message.time,
                   style: const TextStyle(
                     fontSize: 11,
                     color: Colors.grey,
@@ -331,14 +242,13 @@ class ChatBubble extends StatelessWidget {
               ],
             ),
           ),
-
-          if (isSender) _avatar("Y"),
+          if (isSender) _avatar("Y",isSender),
         ],
       ),
     );
   }
 
-  Widget _avatar(String letter) {
+  Widget _avatar(String letter,isSender) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6),
       child:   Container(
@@ -418,7 +328,13 @@ class ChatBubble extends StatelessWidget {
 
 
 
-// GET https://dummyjson.com/comments?limit=10
-// GET https://jsonplaceholder.typicode.com/comments?postId=1
-// GET https://www.boredapi.com/api/activity
-// GET https://api.quotable.io/random
+
+
+
+
+
+
+
+
+
+

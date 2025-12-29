@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
+import '../../PopAlert.dart';
 import 'model.dart';
 
 class UserlistController extends GetxController{
@@ -26,4 +28,73 @@ class UserlistController extends GetxController{
     }
   }
 
+  void showAddUserDialog(context) {
+    final TextEditingController controller = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Color(0xffFFFFFF),
+          title: const Text("Add User"),
+          content: TextField(
+            controller: controller,
+
+            decoration: InputDecoration(
+
+              hintText: 'Enter a Name',
+              hintStyle: const TextStyle(
+                fontSize: 14,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+                color: Color(0xff999999),
+              ),
+
+
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (controller.text.trim().isNotEmpty) {
+                  users.add(
+                    UserModel(
+                      id: DateTime.now().millisecondsSinceEpoch,
+                      name: capitalizeFirst(controller.text.trim()),
+                      online: false,
+                      status: "Online",
+                    ),
+                  );
+
+                  Navigator.pop(context);
+                  showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (_) => PopAlert(subtext: 'User Added Successfully'),
+                  );
+
+                }else{
+                  showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (_) => PopAlert(subtext: 'Something went Wrong!,\n Try again later'),
+                  );
+print('Something Error!, Try again later');
+                }
+              },
+              child: const Text("Add"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+  String capitalizeFirst(String text) {
+    if (text.isEmpty) return text;
+    return text[0].toUpperCase() + text.substring(1);
+  }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'userlist_controller.dart';
-import '../chat.dart';
+import '../Chat/chat.dart';
 
 class UsersTab extends StatefulWidget {
   const UsersTab({super.key});
@@ -42,15 +42,17 @@ physics: NeverScrollableScrollPhysics(),
 
         return GestureDetector(
           onTap: (){
-            Get.offAll(() => ChatScreen(),
+
+            Get.offAll(() => ChatScreen(),arguments: {"id":id,"name":name,"status":status},
               transition: Transition.leftToRight,
               duration: Duration(milliseconds: 500),
             );
 
           },
           child:Container(
+            color: Colors.white,
           margin: const EdgeInsets.only(bottom: 25),
-
+width: MediaQuery.of(context).size.width,
           child:  Row(
               children: [
                 Stack(
@@ -122,6 +124,7 @@ physics: NeverScrollableScrollPhysics(),
                     ),
                   ],
                 ),
+                SizedBox(width: 4),
               ],
             ),
           ),

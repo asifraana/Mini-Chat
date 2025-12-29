@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
+import '../../PopAlert.dart';
 import 'chathistory_model.dart';
 
 
@@ -9,7 +11,7 @@ class ChathistoryController {
   var chats = <ChatModel>[].obs;
   var isLoading = true.obs;
 
-   Future<List<ChatModel>> fetchChats() async {
+   Future<List<ChatModel>> fetchChats(context) async {
     final response = await http.get(
       Uri.parse('https://jsonplaceholder.typicode.com/comments?_limit=15'),
     );
@@ -21,7 +23,14 @@ class ChathistoryController {
       chats.value= data.map((e) => ChatModel.fromJson(e)).toList();
       return chats.value;
     } else {
+      isLoading.value=true;
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (_) => PopAlert(subtext: 'Something went Wrong!,\n Try again later'),
+      );
       throw Exception('Failed to load chats');
+
     }
   }
 

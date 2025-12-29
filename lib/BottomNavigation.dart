@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mini_chat/Home%20Module/HomePage.dart';
 import 'package:mini_chat/Offer%20Module/Offer%20Page.dart';
-
+import 'package:get/get.dart';
+import 'Home Module/Userlist/userlist_controller.dart';
 import 'Settings Module/Settings.dart';
 
 class Bottomnavigation extends StatefulWidget {
@@ -15,7 +16,7 @@ class Bottomnavigation extends StatefulWidget {
 }
 
 class _BottomnavigationState extends State<Bottomnavigation> {
-
+  final UserlistController userlist=Get.put(UserlistController());
    late int bottom=0;
    @override
    void initState() {
@@ -77,7 +78,7 @@ class _BottomnavigationState extends State<Bottomnavigation> {
          backgroundColor:const Color(0xff2769FC) ,
          foregroundColor:const Color(0xffFFFFFF) ,
           shape: CircleBorder(),
-          onPressed: () {_showAddUserDialog(context);},
+          onPressed: () {userlist.showAddUserDialog(context);},
           child: const Icon(Icons.add),
         ):null
     );
@@ -131,52 +132,7 @@ class _BottomnavigationState extends State<Bottomnavigation> {
     });
   }
 
-   void _showAddUserDialog(BuildContext context) {
-     final TextEditingController controller = TextEditingController();
 
-     showDialog(
-       context: context,
-       builder: (context) {
-         return AlertDialog(
-           backgroundColor: Color(0xffFFFFFF),
-           title: const Text("Add User"),
-           content: TextField(
-             controller: controller,
-
-               decoration: InputDecoration(
-
-                 hintText: 'Enter a Name',
-                 hintStyle: const TextStyle(
-                   fontSize: 14,
-                   fontFamily: 'Poppins',
-                   fontWeight: FontWeight.w600,
-                   color: Color(0xff999999),
-                 ),
-
-
-             ),
-           ),
-           actions: [
-             TextButton(
-               onPressed: () => Navigator.pop(context),
-               child: const Text("Cancel"),
-             ),
-             ElevatedButton(
-               onPressed: () {
-                 if (controller.text.trim().isNotEmpty) {
-
-                   Navigator.pop(context);
-                 }else{
-
-                 }
-               },
-               child: const Text("Add"),
-             ),
-           ],
-         );
-       },
-     );
-   }
 
 
 

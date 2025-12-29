@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../BottomNavigation.dart';
 
 class Offers_page extends StatelessWidget {
   const Offers_page({super.key});
@@ -6,7 +9,17 @@ class Offers_page extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return  Scaffold(
+    return PopScope(
+        canPop: false,
+        onPopInvoked: (didPop) {
+          Get.offAll(
+                () => Bottomnavigation(bottomvalue: 0,),
+
+            transition: Transition.rightToLeft,
+            duration: Duration(milliseconds: 500),
+          );
+        },
+        child: Scaffold(
       backgroundColor: Color(0xffFFFFFF),
       body:Center(
         child: Text('Offers',
@@ -19,6 +32,6 @@ class Offers_page extends StatelessWidget {
         ),
       ),
 
-    );
+    ));
   }
 }
