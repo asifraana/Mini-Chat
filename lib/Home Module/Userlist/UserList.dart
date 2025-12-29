@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../Controllers/userlist.dart';
 import 'chat.dart';
 
 class UsersTab extends StatefulWidget {
@@ -11,30 +12,9 @@ class UsersTab extends StatefulWidget {
 }
 
 class _UsersTabState extends State<UsersTab> {
+  final UserlistController userlist=Get.put(UserlistController());
   @override
   Widget build(BuildContext context) {
-    final users = [
-      {"name": "Alice Johnson", "status": "Online", "online": true},
-      {"name": "Bob Smith", "status": "2 min ago", "online": false},
-      {"name": "Carol Williams", "status": "Online", "online": true},
-      {"name": "David Brown", "status": "1 hour ago", "online": false},
-      {"name": "Emma Davis", "status": "Online", "online": true},
-      {"name": "Frank Miller", "status": "5 min ago", "online": false},
-      {"name": "Grace Wilson", "status": "Online", "online": true},
-      {"name": "Henry Moore", "status": "Offline", "online": false},
-      {"name": "Emma Davis", "status": "Online", "online": true},
-      {"name": "Frank Miller", "status": "5 min ago", "online": false},
-      {"name": "Grace Wilson", "status": "Online", "online": true},
-      {"name": "Henry Moore", "status": "Offline", "online": false},
-      {"name": "Emma Davis", "status": "Online", "online": true},
-      {"name": "Frank Miller", "status": "5 min ago", "online": false},
-      {"name": "Grace Wilson", "status": "Online", "online": true},
-      {"name": "Henry Moore", "status": "Offline", "online": false},
-      {"name": "Emma Davis", "status": "Online", "online": true},
-      {"name": "Frank Miller", "status": "5 min ago", "online": false},
-      {"name": "Grace Wilson", "status": "Online", "online": true},
-      {"name": "Asif", "status": "Offline", "online": false},
-    ];
 
     return ListView.builder(
       padding: const EdgeInsets.only(left: 15,right: 15,top: 20,bottom: 80),
