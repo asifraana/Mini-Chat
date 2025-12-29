@@ -88,9 +88,9 @@ print(response.statusCode);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollController.animateTo(
-        500.0,
-        curve: Curves.easeOut,
+        scrollController.position.maxScrollExtent,
         duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
       );
     });
 
