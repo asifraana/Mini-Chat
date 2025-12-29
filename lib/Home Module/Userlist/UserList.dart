@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../Controllers/userlist.dart';
-import 'chat.dart';
+import 'userlist_controller.dart';
+import '../chat.dart';
 
 class UsersTab extends StatefulWidget {
   const UsersTab({super.key});
@@ -13,19 +13,32 @@ class UsersTab extends StatefulWidget {
 
 class _UsersTabState extends State<UsersTab> {
   final UserlistController userlist=Get.put(UserlistController());
+
+  @override
+  void initState() {
+    userlist.fetchUsers();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
 
-    return ListView.builder(
+    return Obx(() {
+      if (userlist.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      return ListView.builder(
       padding: const EdgeInsets.only(left: 15,right: 15,top: 20,bottom: 80),
-      itemCount: users.length,
+      itemCount: userlist.users.length,
 physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemBuilder: (context, index) {
-        final user = users[index];
-        final name = user["name"] as String;
-        final status = user["status"] as String;
-        final online = user["online"] as bool;
+        final user = userlist.users[index];
+        final name = user.name;
+        final status = user.status;
+        final online = user.online;
+        final id = user.id;
 
         return GestureDetector(
           onTap: (){
@@ -114,7 +127,7 @@ physics: NeverScrollableScrollPhysics(),
           ),
         );
       },
-    );
+    );});
   }
 
 

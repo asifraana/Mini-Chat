@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../chat.dart';
+import 'chathistory_controller.dart';
 
 class ChatHistoryTab extends StatefulWidget {
   const ChatHistoryTab({super.key});
@@ -8,72 +12,42 @@ class ChatHistoryTab extends StatefulWidget {
 }
 
 class _ChatHistoryTabState extends State<ChatHistoryTab> {
+
+  final ChathistoryController chatshistorycontroller=Get.put(ChathistoryController());
+
+  @override
+  void initState() {
+    chatshistorycontroller.fetchChats();
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    final chats = [
-      {
-        "name": "Alice Johnson",
-        "message": "See you tomorrow!",
-        "time": "2 min ago",
-        "unread": 2
-      },
-      {
-        "name": "Bob Smith",
-        "message": "Thanks for the help",
-        "time": "10 min ago",
-        "unread": 0
-      },
-      {
-        "name": "Carol Williams",
-        "message": "Let's catch up soon",
-        "time": "1 hour ago",
-        "unread": 1
-      },
-      {
-        "name": "David Brown",
-        "message": "Got it, thanks!",
-        "time": "3 hours ago",
-        "unread": 0
-      },
-      {
-        "name": "Emma Davis",
-        "message": "Perfect, see you then",
-        "time": "5 hours ago",
-        "unread": 0
-      },
-      {
-        "name": "Frank Miller",
-        "message": "That sounds great",
-        "time": "Yesterday",
-        "unread": 0
-      },
-      {
-        "name": "Grace Wilson",
-        "message": "I'll check it out",
-        "time": "Yesterday",
-        "unread": 0
-      },
-      {
-        "name": "Henry Moore",
-        "message": "Okay",
-        "time": "2 days ago",
-        "unread": 0
-      },
-    ];
+    return Obx(() {
+      if (chatshistorycontroller.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
 
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      itemCount: chats.length,
+      return ListView.builder(
+      padding: const EdgeInsets.only(right: 16,left: 16, top: 8,bottom: 90),
+      itemCount: chatshistorycontroller.chats.length,
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
-        final chat = chats[index];
-        final name = chat["name"] as String;
-        final message = chat["message"] as String;
-        final time = chat["time"] as String;
-        final unread = chat["unread"] as int;
+        final chat = chatshistorycontroller.chats[index];
+        final name = chatshistorycontroller.capitalizeFirst(chat.name);
+        final message = chat.message;
+        final time = chat.time;
+        final unread = chat.unread;
 
         return ListTile(
+          onTap: (){
+            Get.offAll(() => ChatScreen(),
+              transition: Transition.leftToRight,
+              duration: Duration(milliseconds: 500),
+            );
+          },
           contentPadding: const EdgeInsets.symmetric(vertical: 8),
           leading: CircleAvatar(
             radius: 26,
@@ -128,6 +102,6 @@ class _ChatHistoryTabState extends State<ChatHistoryTab> {
           ),
         );
       },
-    );
+    );});
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'UserList.dart';
-import 'chat history.dart';
+import 'Userlist/UserList.dart';
+import 'Chat History/chat history.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
