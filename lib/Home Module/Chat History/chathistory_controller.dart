@@ -13,7 +13,7 @@ class ChathistoryController {
 
    Future<List<ChatModel>> fetchChats(context) async {
     final response = await http.get(
-      Uri.parse('https://jsonplaceholder.typicode.com/comments?_limit=15'),
+      Uri.parse('https://jsonplaceholder.typicode.com/comments?_limit=15'),headers: {"Content-Type": "application/json"}
     );
 
     print(response.body);

@@ -37,6 +37,7 @@ class ChatController extends GetxController{
   Future<void> fetchReceiverMessage(BuildContext context) async {
     final response = await http.get(
       Uri.parse('https://jsonplaceholder.typicode.com/comments'),
+        headers: {"Content-Type": "application/json"}
     );
 print(response.body);
 print(response.statusCode);
