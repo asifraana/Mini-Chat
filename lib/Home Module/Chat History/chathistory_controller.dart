@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -12,6 +13,7 @@ class ChathistoryController {
   var isLoading = true.obs;
 
    Future<List<ChatModel>> fetchChats(context) async {
+     try{
     final response = await http.get(
       Uri.parse('https://jsonplaceholder.typicode.com/comments?_limit=15'),headers: {"Content-Type": "application/json",
       "Accept": "application/json",
@@ -35,6 +37,15 @@ class ChathistoryController {
       throw Exception('Failed to load chats');
 
     }
+     }on SocketException {
+       showDialog(
+         barrierDismissible: false,
+         context: context,
+         builder: (_) => PopAlert(subtext: 'No Internet connection'),
+       );
+
+       throw Exception('No Internet connection');
+     }
   }
 
   String capitalizeFirst(String text) {

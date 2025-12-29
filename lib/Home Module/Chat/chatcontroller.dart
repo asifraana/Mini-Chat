@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -35,6 +36,7 @@ class ChatController extends GetxController{
 
 
   Future<void> fetchReceiverMessage(BuildContext context) async {
+    try{
     final response = await http.get(
       Uri.parse('https://jsonplaceholder.typicode.com/comments'),
         headers: {"Content-Type": "application/json",
@@ -69,6 +71,15 @@ print(response.statusCode);
         context: context,
         builder: (_) => PopAlert(subtext: 'Something went Wrong!,\n Try again later'),
       );
+    }
+    }on SocketException {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (_) => PopAlert(subtext: 'No Internet connection'),
+      );
+
+      throw Exception('No Internet connection');
     }
   }
 

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,21 +13,34 @@ class UserlistController extends GetxController{
   var isLoading = true.obs;
 
 
-  Future<List<UserModel>> fetchUsers() async {
-    final response = await http.get(Uri.parse('https://dummyjson.com/users?limit=20'),headers: {"Content-Type": "application/json"});
-    print(response.body);
-    print(response.statusCode);
+  Future<List<UserModel>> fetchUsers(context) async {
+    try {
+      final response = await http.get(
+          Uri.parse('https://dummyjson.com/users?limit=20'),
+          headers: {"Content-Type": "application/json"});
+      print(response.body);
+      print(response.statusCode);
 
-    if (response.statusCode == 200) {
-      isLoading.value=false;
-      final data = jsonDecode(response.body);
-      users.value= (data['users'] as List).map((e) => UserModel.fromJson(e)).toList();
-      return users.value;
-    } else {
-      isLoading.value=true;
-      throw Exception('Failed to load chats');
-    }
-  }
+      if (response.statusCode == 200) {
+        isLoading.value = false;
+        final data = jsonDecode(response.body);
+        users.value =
+            (data['users'] as List).map((e) => UserModel.fromJson(e)).toList();
+        return users.value;
+      } else {
+        isLoading.value = true;
+        throw Exception('Failed to load chats');
+      }
+    }on SocketException {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (_) => PopAlert(subtext: 'No Internet connection'),
+      );
+
+      throw Exception('No Internet connection');
+}
+}
 
   void showAddUserDialog(context) {
     final TextEditingController controller = TextEditingController();
